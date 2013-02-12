@@ -4,6 +4,11 @@ input[type='text'].nservers {
     font-size: 40px;
 }
 
+#js-server-load-estimator {
+    max-width: 900px;
+    margin: auto;
+}
+
 .servers_right {
     overflow: hidden;
     min-height: 50px;
@@ -17,12 +22,24 @@ input[type='text'].nservers {
     margin-left: 10px;
 }
 
-#server .ui-slider {
+.servers_right .ui-slider {
     margin-top:15px;
-    margin-left:5px;
+    margin-right:15px;
 }
 
 .break {
     float:none;
     clear:both;
+}
+
+span.percent {
+    font-size: 120%;
+}
+
+table tr td.n_visits input{
+    width: 100px;
+}
+
+table tr td.peak_time {
+    width: 90%;
 }
