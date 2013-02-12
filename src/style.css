@@ -1,0 +1,28 @@
+input[type='text'].nservers {
+    width: 60px;
+    height: 60px;
+    font-size: 40px;
+}
+
+.servers_right {
+    overflow: hidden;
+    min-height: 50px;
+    padding-left: 10px;
+}
+
+.servers_left {
+    float: left;
+    width: 70px;
+    min-height: 50px;
+    margin-left: 10px;
+}
+
+#server .ui-slider {
+    margin-top:15px;
+    margin-left:5px;
+}
+
+.break {
+    float:none;
+    clear:both;
+}

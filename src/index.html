@@ -1,0 +1,88 @@
+<HTML>
+<HEAD><TITLE></TITLE>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="reset.css" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<script src="./normalDistribution.js"></script>
+
+<script>
+
+  function updateSliderPercents() {
+       $('#slider_webserver_text')[0].innerHTML = $('#slider_webserver').slider('value') + '%';
+       $('#slider_mediaserver_text')[0].innerHTML = $('#slider_mediaserver').slider('value') + '%';
+  }
+
+  $(function() {
+    $( "#tabs" ).tabs();
+    
+    $( "#slider_webserver" ).slider( {
+        slide: function(event, ui) { $('#slider_mediaserver').slider('value',100-ui.value) },
+        change: updateSliderPercents
+    });
+    
+    $( "#slider_mediaserver" ).slider( {
+        slide: function(event, ui) { $('#slider_webserver').slider('value',100-ui.value) },
+        change: updateSliderPercents
+    });
+  });
+
+</script>
+
+</HEAD>
+<BODY>
+<h1>Web Traffic Estimation</h1>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#main">Main</a></li>
+        <li><a href="#server">Servers</a></li>
+        <li><a href="#help">Help</a></li>
+    </ul>
+
+    <div id="main">
+        <label for="ppv">Pages per visits:</label><input type="text" name="ppv" id="ppv" />
+        <label for="hpp">Hits per page:</label><input type="text" name="hpv" id="hpv" />
+        <br/><br/>
+        <label for="n_v"># of visits:</label><input type="text" name="n_v" id="n_v" />
+    </div>
+        
+    <div id="server">
+        <h3>Web Servers</h3>
+        <div class="servers_left">
+            <input class="nservers" type="text" name="webserver_number" /> 
+        </div>
+        <div class="servers_right">
+            servers handle <span id="slider_webserver_text">0%</span> requests
+            <div id="slider_webserver"></div><br/>
+        </div>
+        
+        <div class="break"></div>
+        
+        <h3>Media Server(s):</h3>
+        <div class="servers_left">
+            <input class="nservers" type="text" name="webserver_number" /> 
+        </div>
+        <div class="servers_right">
+            servers handle <span id="slider_mediaserver_text">0%</span> requests
+            <div id="slider_mediaserver"></div><br/>
+        </div>
+        
+        <div class="break"></div>
+        
+        <h3>Databse Server:</h3>
+        <label for="queries_per_page">Queries per Page:</label><input type="text" name="queries_per_page" id="queries_per_page" />
+        </legend>
+    </div>
+
+    <div id="help">
+        Help, I need somebody
+    </div>
+    
+</div>
+
+  
+</BODY>
+</HTML>
+
