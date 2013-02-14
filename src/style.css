@@ -1,30 +1,13 @@
+/*
 input[type='text'].nservers {
     width: 60px;
     height: 60px;
     font-size: 40px;
-}
+}*/
 
 #js-server-load-estimator {
     max-width: 900px;
     margin: auto;
-}
-
-.servers_right {
-    overflow: hidden;
-    min-height: 50px;
-    padding-left: 10px;
-}
-
-.servers_left {
-    float: left;
-    width: 70px;
-    min-height: 50px;
-    margin-left: 10px;
-}
-
-.servers_right .ui-slider {
-    margin-top:15px;
-    margin-right:15px;
 }
 
 .break {
@@ -36,10 +19,10 @@ span.percent {
     font-size: 120%;
 }
 
-table tr td.n_visits input{
-    width: 100px;
+#demo_table th {
+    text-align: left;
 }
 
-table tr td.peak_time {
-    width: 90%;
+#demo_table td {
+    padding-right: 50px;
 }

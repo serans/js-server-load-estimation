@@ -1,45 +1,24 @@
-<HTML>
-<HEAD><TITLE></TITLE>
+<html>
+<head><title></title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="reset.css" />
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
 <script src="./normalDistribution.js"></script>
+<script src="./uniroot.js"></script>
+<script src="./configurations.js"></script>
+<script src="./js-sle-ui.js"></script>
 
 <script>
+  
 
-  function updateSliderPercents() {
-       $('#slider_webserver_text')[0].innerHTML = $('#slider_webserver').slider('value') + '%';
-       $('#slider_mediaserver_text')[0].innerHTML = $('#slider_mediaserver').slider('value') + '%';
-  }
-
-  $(function() {
-    $( "#tabs" ).tabs();
-    
-    $( "#slider_webserver" ).slider( {
-        slide: function(event, ui) { $('#slider_mediaserver').slider('value',100-ui.value) },
-        change: updateSliderPercents
-    });
-    
-    $( "#slider_mediaserver" ).slider( {
-        slide: function(event, ui) { $('#slider_webserver').slider('value',100-ui.value) },
-        change: updateSliderPercents
-    });
-    
-    $( "#slider_visits_0" ).slider( {
-        range: true,
-        min: 0,
-        max: 1440,
-        values: [ 10, 15 ],
-    });
-    
-  });
 
 </script>
 
-</HEAD>
-<BODY>
+</head>
+
+<body>
 
 <div id="js-server-load-estimator">
 <h1>JavaScript Server Load Estimator</h1>
@@ -54,36 +33,41 @@
     <div id="main">
         
         <h3>Demographic Data</h3>
-        
-        <table>
+
+        <table id="demo_table" >
             <th># Visits</th>
             <th>Peak Time</th>
+            <th>Peak Duration</th>
+            <th>Remove</th>
             <tbody>
-            <tr>
-                <td class="n_visits"><input type="text" name="n_visits_0" id="n_visits_0" /></td>
-                <td class="peak_time"><div id="slider_visits_0"></div></td>
-            </tr>            
+                
             </tbody>
         </table>
+        <a href="javascript:addPopulation()">Add Population</a>
         
         <h3>Website Statistics</h3>
         <label for="ppv">Pages per visit:</label><input type="text" name="ppv" id="ppv" />
-        <label for="hpp">Hits per page:</label><input type="text" name="hpv" id="hpv" />
+        <label for="hpp">Hits per page:</label><input type="text" name="hpp" id="hpp" />
         <br/><br/>
 
         <h3>Web Servers</h3>
-        <div class="servers_left">
-            <input class="nservers" type="text" name="webserver_number" /> 
-        </div>
-        <div class="servers_right">
-            Web Servers handle <span class="percent" id="slider_webserver_text">0%</span> requests
-            <div id="slider_webserver"></div><br/>
-            Caches / CDNs / Media Servers handle <span class="percent" id="slider_mediaserver_text">0%</span> requests
-            <div id="slider_mediaserver"></div><br/>
+
+        <label># Web Servers:</label>
+        <input class="nservers" type="text" name="webserver_number" /> 
+        
+        <label>Use Caches / CDNs:</label>
+        <input type="checkbox" name="useCDN" id="useCDN" onChange="javascript:$('#cdn_setup').toggle('fast')" />
+
+        <div id="cdn_setup" style="clear:both;margin-top:10px;display:none">
+            Requests served by:
+            <div id="slider_webserver"></div>
+            <div style="float:left">Web Servers <span class="percent" id="slider_webserver_text">0%</span></div>
+            <div style="float:right">Caches / CDNs <span class="percent" id="slider_cdn_text">0%</span></div>
+            <br/>
         </div>
         
         <h3>Databse Server:</h3>
-        <label for="queries_per_page">Queries per Page:</label><input type="text" name="queries_per_page" id="queries_per_page" />
+        <label for="qpp">Queries per Page:</label><input type="text" name="qpp" id="qpp" />
         </legend>
         
     </div>
@@ -100,6 +84,4 @@
     </div>
 </div>
   
-</BODY>
-</HTML>
-
+</body>
