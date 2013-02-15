@@ -91,7 +91,7 @@
         "<input type='text' size='2' name='peak_duration_h_"+nrows+"' id='peak_duration_h_"+nrows+"' value="+peak_duration_h+" />:"+
         "<input type='text' size='2' name='peak_duration_m_"+nrows+"' id='peak_duration_m_"+nrows+"' value="+peak_duration_m+" />"+
         "</td><td style='width:32px'>"+
-        "<a href='javascript:$(\"#demo_table_row_"+nrows+"\").remove()'>[x]</a>"+
+        "<a class='button danger' href='javascript:$(\"#demo_table_row_"+nrows+"\").remove()'>Remove</a>"+
         "</td></tr>");
     nrows++;
   };

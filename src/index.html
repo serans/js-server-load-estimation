@@ -2,84 +2,110 @@
 <head><title></title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="reset.css" />
-<link rel="stylesheet" href="style.css" />
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
-<script src="./normalDistribution.js"></script>
 <script src="./uniroot.js"></script>
 <script src="./configurations.js"></script>
+<script src="./normalDistribution.js"></script>
 <script src="./js-sle-ui.js"></script>
 
-<script>
-  
-
-
-</script>
+<link rel="stylesheet" href="reset.css" />
+<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
+<!--
+<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery.ui.tabs.css" rel="stylesheet" type="text/css">
+<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery.ui.slider.css" rel="stylesheet" type="text/css">
+-->
+<link href="http://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="style.css" />
 
 </head>
 
 <body>
 
 <div id="js-server-load-estimator">
-<h1>JavaScript Server Load Estimator</h1>
 
-    <div id="tabs">
-    <ul>
-        <li><a href="#main">Main</a></li>
-        <li><a href="#server">Servers</a></li>
-        <li><a href="#help">Help</a></li>
-    </ul>
-
-    <div id="main">
-        
-        <h3>Demographic Data</h3>
-
-        <table id="demo_table" >
-            <th># Visits</th>
-            <th>Peak Time</th>
-            <th>Peak Duration</th>
-            <th>Remove</th>
-            <tbody>
-                
-            </tbody>
-        </table>
-        <a href="javascript:addPopulation()">Add Population</a>
-        
-        <h3>Website Statistics</h3>
-        <label for="ppv">Pages per visit:</label><input type="text" name="ppv" id="ppv" />
-        <label for="hpp">Hits per page:</label><input type="text" name="hpp" id="hpp" />
-        <br/><br/>
-
-        <h3>Web Servers</h3>
-
-        <label># Web Servers:</label>
-        <input class="nservers" type="text" name="webserver_number" /> 
-        
-        <label>Use Caches / CDNs:</label>
-        <input type="checkbox" name="useCDN" id="useCDN" onChange="javascript:$('#cdn_setup').toggle('fast')" />
-
-        <div id="cdn_setup" style="clear:both;margin-top:10px;display:none">
-            Requests served by:
-            <div id="slider_webserver"></div>
-            <div style="float:left">Web Servers <span class="percent" id="slider_webserver_text">0%</span></div>
-            <div style="float:right">Caches / CDNs <span class="percent" id="slider_cdn_text">0%</span></div>
-            <br/>
+    <div id="tabs" >
+        <div id="tabs-menu" >
+            <ul>
+                <li><a href="#file">File</a></li>
+                <li><a href="#configuration">Configuration</a></li>
+                <li><a href="#report">Report</a></li>
+                <li><a href="#help">Help</a></li>
+            </ul>
         </div>
-        
-        <h3>Databse Server:</h3>
-        <label for="qpp">Queries per Page:</label><input type="text" name="qpp" id="qpp" />
-        </legend>
-        
-    </div>
-        
-    <div id="server">
-        
-        
-    </div>
+    
+        <div id="file">
+            <a href="button" class="button">Normal</a>
+            <a href="button" class="button inactive">Inactive</a>
+            <a href="button" class="button danger">danger</a>
+        </div>
 
-    <div id="help">
-        Help, I need somebody
-    </div>
+        <div id="configuration" >
+            
+            <h3>Demographic Data</h3>
+            
+            <div class="demographic-data">
+                <label>Visits</label>
+                <input type='text' name='n_visits_0' id='n_visits_0' value="0" />
+                <div style="float:left">
+                    <label>Peak Time Start:</label>
+                    <input class='time-pick' type='text' size='2' name='peak_time_h_0' id='peak_time_h_0' value='00' />
+                    :
+                    <input class='time-pick' type='text' size='2' name='peak_time_m_0' id='peak_time_m_0' value='00' />
+                </div>
+                <div style="float:right;text-align:right;">
+                    <label>Peak Time End:</label>
+                    <input class='time-pick' type='text' size='2' name='peak_time_h_0' id='peak_time_h_0' value='00' />
+                    :
+                    <input class='time-pick' type='text' size='2' name='peak_time_m_0' id='peak_time_m_0' value='00' />
+                </div>
+            </div>
+<!--
+            <table id="demo_table" >
+                <th>Number of Visits</th>
+                <th>Peak Time</th>
+                <th>Peak Duration</th>
+                <th>Remove</th>
+                <tbody>
+                    
+                </tbody>
+            </table>
+            -->
+            <a class="button" href="javascript:addPopulation()">Add Population</a>
+            
+            <h3>Website Statistics</h3>
+            <label for="ppv">Pages per visit:</label><input type="text" name="ppv" id="ppv" />
+            <label for="hpp">Hits per page:</label><input type="text" name="hpp" id="hpp" />
+
+            <h3>Web Servers</h3>
+
+            <label>Number of Web Servers:</label>
+            <input class="nservers" type="text" name="webserver_number" /> 
+            
+            <input type="checkbox" name="useCDN" id="useCDN" onChange="javascript:$('#cdn_setup').toggle('fast')" />
+            <label for="useCDN" class="check" >Use CDN</label>
+
+            <div id="cdn_setup" style="clear:both;margin-top:10px;display:none">
+                Requests served by:
+                <div id="slider_webserver"></div>
+                <div style="font-size:70%;float:left">Web Servers <span class="percent" id="slider_webserver_text">0%</span></div>
+                <div style="font-size:70%;float:right">CDN <span class="percent" id="slider_cdn_text">0%</span></div>
+                <br/>
+            </div>
+            
+            <h3>Databse Server</h3>
+            <label for="qpp">Queries per Page:</label><input type="text" name="qpp" id="qpp" />
+            </legend>
+            
+        </div>
+            
+        <div id="report">
+
+            Report is hefera fkla msldmfaslkdmñlkmñ
+            
+        </div>
+
+        <div id="help">
+            Help, I need somebody
+        </div>
     
     </div>
 </div>
