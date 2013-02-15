@@ -1,3 +1,9 @@
+/*
+{"ppv":"ppv","hpp":"hpp","qpp":"queries","nservers":"nweb","demo_table":[{"n_visits":"visits","peak_start_h":"h0","peak_start_m":"m0","peak_end_h":"h1","peak_end_m":"m1"}],"cdn":27}
+*/
+
+  var nrows=0;
+  
   function readConfig() {
         function readValue(key, suffix) {
             if(suffix==undefined) suffix=""
@@ -13,18 +19,18 @@
             "nservers": readValue("nservers"),
         };
         
-        if($('[id^=demo_table_row_]').length>0) {
+        var demoItems = $('#demographic-data-table').children();
+        if( demoItems.length > 0 ) {
             config.demo_table = new Array();
-            
-            $.each($('[id^=demo_table_row_]'), function(i,v) { 
-                nid = ( $(v).attr('id').match(/(demo_table_row_)([0-9]*)/)[2] );
-                
+            $.each( demoItems, function(i,v) {
+                nid = ( $(v).attr('id').match(/(demographic-data-row-)([0-9]*)/)[2] );
+                console.log(nid);
                 config.demo_table.push ({
-                    "n_visits":$("#n_visits_"+nid).attr('value'),
-                    "peak_time_h":$("#peak_time_h_"+nid).attr('value'),
-                    "peak_time_m":$("#peak_time_m_"+nid).attr('value'),
-                    "peak_duration_h_":$("#peak_duration_h_"+nid).attr('value'),
-                    "peak_duration_h_":$("#peak_duration_m_"+nid).attr('value'),
+                    "n_visits":$("#n_visits_"+nid).val(),
+                    "peak_start_h":$("#peak_start_h_"+nid).val(),
+                    "peak_start_m":$("#peak_start_m_"+nid).val(),
+                    "peak_end_h":$("#peak_end_h_"+nid).val(),
+                    "peak_end_m":$("#peak_end_m_"+nid).val(),
                 });
                 
             });
@@ -37,7 +43,7 @@
         return config;
   }
 
-  function loadConfigFile(jsonConfig) {
+  function importJSON(jsonConfig) {
         function applyValue(key) {
             if(jsonConfig[key]!=undefined) $('#'+key).val(jsonConfig[key])
         }
@@ -53,10 +59,10 @@
                 data = jsonConfig['demo_table'][i];
                 addPopulation( 
                     data['n_visits'], 
-                    data['peak_time_h'], 
-                    data['peak_time_m'], 
-                    data['peak_duration_h'], 
-                    data['peak_duration_m']);
+                    data['peak_start_h'], 
+                    data['peak_start_m'], 
+                    data['peak_end_h'], 
+                    data['peak_end_m']);
             }
         }
         
@@ -72,30 +78,45 @@
   }
 
   function removePopulations() {
-        $('#demo_table').find("tr:gt(0)").remove();
+        $('#demographic-data-table').innerHTML="";
+        nrows=0;
   }
 
-  var nrows=0;
-  function addPopulation(n_visits, peak_time_h, peak_time_m, peak_duration_h, peak_duration_m) {
+  function addPopulation(n_visits, peak_start_h, peak_start_m, peak_end_h, peak_end_m) {
     if(n_visits==undefined) n_visits=0;
-    if(peak_time_h==undefined) peak_time_h=12;
-    if(peak_time_m==undefined) peak_time_m=0;
-    if(peak_duration_h==undefined) peak_duration_h=4;
-    if(peak_duration_m==undefined) peak_duration_m=0;
-  
-    $('#demo_table').append("<tr id='demo_table_row_"+nrows+"'><td>"+
-        "<input type='text' name='n_visits_"+nrows+"' id='n_visits_"+nrows+"' value="+n_visits+" /></td><td>"+
-        "<input type='text' size='2' name='peak_time_h_"+nrows+"' id='peak_time_h_"+nrows+"' value="+peak_time_h+" />:"+
-        "<input type='text' size='2' name='peak_time_m_"+nrows+"' id='peak_time_m_"+nrows+"' value="+peak_time_m+" />"+
-        "</td><td>"+
-        "<input type='text' size='2' name='peak_duration_h_"+nrows+"' id='peak_duration_h_"+nrows+"' value="+peak_duration_h+" />:"+
-        "<input type='text' size='2' name='peak_duration_m_"+nrows+"' id='peak_duration_m_"+nrows+"' value="+peak_duration_m+" />"+
-        "</td><td style='width:32px'>"+
-        "<a class='button danger' href='javascript:$(\"#demo_table_row_"+nrows+"\").remove()'>Remove</a>"+
-        "</td></tr>");
+    if(peak_start_h==undefined) peak_start_h=8;
+    if(peak_start_m==undefined) peak_start_m=0;
+    if(peak_end_h==undefined) peak_end_h=16;
+    if(peak_end_m==undefined) peak_end_m=0;
+        
+    $html = "<div class='demographic-data' id='demographic-data-row-"+nrows+"'> \
+                <a href='javascript:$(\"#demographic-data-row-"+nrows+"\").remove()' class='button danger remove'>X</a> \
+                <label>Visits</label> \
+                <input type='text' name='n_visits_"+nrows+"' id='n_visits_"+nrows+"' value='"+n_visits+"' /> \
+                <div style='float:left'> \
+                    <label>Peak Time Start:</label> \
+                    <input class='time-pick' type='text' size='2' \
+                        name='peak_start_h_"+nrows+"' id='peak_start_h_"+nrows+"' value='"+peak_start_h+"' />: \
+                    <input class='time-pick' type='text' size='2' \
+                        name='peak_start_m_"+nrows+"' id='peak_start_m_"+nrows+"' value='"+peak_start_m+"' /> \
+                </div> \
+                <div style='float:right;text-align:right;'> \
+                    <label>Peak Time End:</label> \
+                    <input class='time-pick' type='text' size='2' \
+                        name='peak_end_h_"+nrows+"' id='peak_end_h_"+nrows+"' value='"+peak_end_h+"' />:\
+                    <input class='time-pick' type='text' size='2' \
+                        name='peak_end_m_"+nrows+"' id='peak_end_m_"+nrows+"' value='"+peak_end_m+"' /> \
+                </div>                                                                                                  \
+            </div>";
+    $("#demographic-data-table").append($html);    
     nrows++;
   };
 
+  function loadTab( tabID ) {
+    var id = $('#tabs a[href="#'+tabID+'"]').parent().index()
+    $("#tabs").tabs("option", "active", id)
+  }
+  
   function updateCDNPercents() {
     $('#slider_webserver_text')[0].innerHTML = $('#slider_webserver').slider('value') + '%';
     $('#slider_cdn_text')[0].innerHTML = 100-$('#slider_webserver').slider('value') + '%';
@@ -108,4 +129,56 @@
         slide: updateCDNPercents,
         value: 100,
     });
+    updateCDNPercents();
+    
+    $("#dialog-export").dialog(
+        {
+            position:'top',
+            height: 'auto',
+            width: 400,
+            modal: true,
+            buttons: {
+              'ok': function() {
+                $(this).dialog('close');
+              }
+            }
+            
+        }
+    ).dialog('close')
+    
+    $("#dialog-import").dialog(
+        {
+            position:'top',
+            height: 'auto',
+            width: 400,
+            modal: true,
+            buttons: {
+              'upload': function() {
+                uploadJSON();
+                $(this).dialog('close');
+              },
+              'cancel': function() {
+                $(this).dialog('close');
+              }
+            }
+            
+        }
+    ).dialog('close')
+    
+    
   });
+
+  function dialogExport() {
+     $("#dialog-export-textarea").val( JSON.stringify(readConfig()) );
+     $("#dialog-export").dialog("open");
+  }
+  
+  function dialogImport() {
+     $("#dialog-import").dialog("open");
+  }
+  
+  function uploadJSON() {
+     importJSON( 
+        $.parseJSON($("#dialog-import-textarea").val())
+     );
+  }

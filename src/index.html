@@ -9,10 +9,6 @@
 
 <link rel="stylesheet" href="reset.css" />
 <link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
-<!--
-<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery.ui.tabs.css" rel="stylesheet" type="text/css">
-<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery.ui.slider.css" rel="stylesheet" type="text/css">
--->
 <link href="http://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="style.css" />
 
@@ -21,54 +17,40 @@
 <body>
 
 <div id="js-server-load-estimator">
-
+    
+    <div id="dialog-export" title="Export JSON File">
+        The following text describes the current configuration in JSON format.<br/>
+        Copy and save it so you can import it later.<br/><br/>
+        <textarea id="dialog-export-textarea" style="width:350px;height:190px">
+        </textarea>
+    </div>
+    
+    <div id="dialog-import" title="Import JSON File">
+        Paste your configuration file in the following text area<br/><br/>
+        <textarea id="dialog-import-textarea" style="width:350px;height:190px">
+        </textarea>
+    </div>
+    
     <div id="tabs" >
         <div id="tabs-menu" >
             <ul>
-                <li><a href="#file">File</a></li>
                 <li><a href="#configuration">Configuration</a></li>
                 <li><a href="#report">Report</a></li>
                 <li><a href="#help">Help</a></li>
             </ul>
         </div>
-    
-        <div id="file">
-            <a href="button" class="button">Normal</a>
-            <a href="button" class="button inactive">Inactive</a>
-            <a href="button" class="button danger">danger</a>
-        </div>
 
         <div id="configuration" >
+
+            <div style="text-align:right">
+                <a href="javascript:dialogExport()" class="button">Export</a>
+                <a href="javascript:dialogImport()" class="button">Import</a>
+            </div>
             
             <h3>Demographic Data</h3>
             
-            <div class="demographic-data">
-                <label>Visits</label>
-                <input type='text' name='n_visits_0' id='n_visits_0' value="0" />
-                <div style="float:left">
-                    <label>Peak Time Start:</label>
-                    <input class='time-pick' type='text' size='2' name='peak_time_h_0' id='peak_time_h_0' value='00' />
-                    :
-                    <input class='time-pick' type='text' size='2' name='peak_time_m_0' id='peak_time_m_0' value='00' />
-                </div>
-                <div style="float:right;text-align:right;">
-                    <label>Peak Time End:</label>
-                    <input class='time-pick' type='text' size='2' name='peak_time_h_0' id='peak_time_h_0' value='00' />
-                    :
-                    <input class='time-pick' type='text' size='2' name='peak_time_m_0' id='peak_time_m_0' value='00' />
-                </div>
+            <div id="demographic-data-table">
             </div>
-<!--
-            <table id="demo_table" >
-                <th>Number of Visits</th>
-                <th>Peak Time</th>
-                <th>Peak Duration</th>
-                <th>Remove</th>
-                <tbody>
-                    
-                </tbody>
-            </table>
-            -->
             <a class="button" href="javascript:addPopulation()">Add Population</a>
             
             <h3>Website Statistics</h3>
@@ -78,9 +60,9 @@
             <h3>Web Servers</h3>
 
             <label>Number of Web Servers:</label>
-            <input class="nservers" type="text" name="webserver_number" /> 
+            <input type="text" name="nservers" id="nservers" /> 
             
-            <input type="checkbox" name="useCDN" id="useCDN" onChange="javascript:$('#cdn_setup').toggle('fast')" />
+            <input type="checkbox" name="useCDN" id="useCDN" onChange="javascript:$('#cdn_setup').toggle('fast');" />
             <label for="useCDN" class="check" >Use CDN</label>
 
             <div id="cdn_setup" style="clear:both;margin-top:10px;display:none">
@@ -93,20 +75,30 @@
             
             <h3>Databse Server</h3>
             <label for="qpp">Queries per Page:</label><input type="text" name="qpp" id="qpp" />
-            </legend>
+
+            <h3>Notes</h3>
+            <textarea>
+            </textarea>
+            
+            <div style="text-align:right">
+            <a href='javascript:loadTab("report")' class="button">Get Report</a>
+            </div>
+            
             
         </div>
             
         <div id="report">
-
-            Report is hefera fkla msldmfaslkdmñlkmñ
-            
+            Report be here
         </div>
 
         <div id="help">
             Help, I need somebody
         </div>
     
+    </div>
+
+    <div style="margin-top:10px; font-size:90%; text-align: center">
+        JS Server Load Estimator - Published under GPLv2 by M.H. Serans
     </div>
 </div>
   

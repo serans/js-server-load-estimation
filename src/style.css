@@ -10,7 +10,7 @@ body {
     color: #444;
 }
 
-h1,h2,h3,h4 {
+h1,h2,h3,h4, .ui-dialog-titlebar {
     font-family: 'Oswald', sans-serif;
 }
 
@@ -233,4 +233,17 @@ span.percent {
     display:block;
     clear:both;
     overflow: auto;
+    border: 1px solid #aaa;
+    margin-bottom: 1em;
+    padding: 1em 1em 0em 1em;
+}
+
+.demographic-data .remove {
+    float: right;
+    position: relative;
+    top: -1.3em;
+}
+
+.ui-widget {
+    font-size: 1em;
 }
