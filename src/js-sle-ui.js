@@ -17,6 +17,7 @@
             "hpp": readValue("hpp"),
             "qpp": readValue("qpp"),
             "nservers": readValue("nservers"),
+            "notes": readValue("notes"),
         };
         
         var demoItems = $('#demographic-data-table').children();
@@ -52,7 +53,7 @@
         applyValue('hpp');
         applyValue('qpp');
         applyValue('nservers');
-        
+        applyValue('notes');
         removePopulations();
         if(jsonConfig['demo_table']!=undefined && jsonConfig['demo_table'].length>0) {
             for(i=0;i<jsonConfig['demo_table'].length;i++) {
