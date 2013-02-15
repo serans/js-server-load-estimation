@@ -8,14 +8,11 @@ input[type='text'].nservers {
 body {
     background: url('img/body-bg.png');
     color: #444;
+    font-family: Verdana, Arial, sans-serif;
 }
 
 h1,h2,h3,h4, .ui-dialog-titlebar {
     font-family: 'Oswald', sans-serif;
-}
-
-h1 {
-    color: #ffffff;
 }
 
 label {
@@ -246,4 +243,28 @@ span.percent {
 
 .ui-widget {
     font-size: 1em;
+}
+
+
+.jsle-title h1 {
+    margin: 0;
+    color: #546e87;
+}
+.jsle-title {
+    overflow:auto;
+    margin: 0.5em 0;
+}
+.jsle-title-left {
+    float:left;
+}
+.jsle-title-right {
+    float:right;
+    text-align: right;
+    font-size: 70%;
+    color: #aaa;
+    margin-top: 23px;
+}
+.jsle-title-right a, .jsle-title-right a:visited {
+    text-decoration: none;
+    color:#546e87;
 }
