@@ -11,8 +11,12 @@ body {
     font-family: Verdana, Arial, sans-serif;
 }
 
-h1,h2,h3,h4, .ui-dialog-titlebar {
+h1,h2,h3,h4, .ui-dialog-titlebar, dt {
     font-family: 'Oswald', sans-serif;
+}
+
+dt {
+    color: #888;
 }
 
 label {
@@ -189,7 +193,8 @@ label.check {
     font-size: 1em;
     color: #546e87;
     border-top: 1px #b2bbc4 dotted;
-    border-bottom: 1px #b2bbc4 dotted;
+    margin: 10px 0 5px 0;
+    padding: 5px 0 0 0;
 }
 
 #tabs input {

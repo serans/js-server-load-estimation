@@ -1,15 +1,23 @@
 <html>
 <head><title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
+<!--
+<script src="http://cachedcommons.org/cache/jqplot/0.9.7/javascripts/jqplot.js"></script>
+-->
+<script src="./js/libs/jquery.jqplot.js"></script>
+
 <script src="./uniroot.js"></script>
 <script src="./configurations.js"></script>
 <script src="./normalDistribution.js"></script>
+<script src="./js-sle-main.js"></script>
 <script src="./js-sle-ui.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="reset.css" />
+
 <link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="reset.css" />
 <link rel="stylesheet" href="style.css" />
 
 </head>
@@ -21,13 +29,13 @@
     <div id="dialog-export" title="Export JSON File">
         The following text describes the current configuration in JSON format.<br/>
         Copy and save it so you can import it later.<br/><br/>
-        <textarea id="dialog-export-textarea" style="width:350px;height:190px">
+        <textarea id="dialog-export-textarea" style="width:100%;height:190px">
         </textarea>
     </div>
     
-    <div id="dialog-import" title="Import JSON File">
+    <div id="dialog-import" title="Import JSON File" style="max-width:100%">
         Paste your configuration file in the following text area<br/><br/>
-        <textarea id="dialog-import-textarea" style="width:350px;height:190px">
+        <textarea id="dialog-import-textarea" style="width:100%;height:190px">
         </textarea>
     </div>
     
@@ -99,7 +107,20 @@
         </div>
             
         <div id="report">
-            Report be here
+            <h3>Peak Data</h3>
+            <dl>
+                <dt>Hits Per Second</dt>
+                    <dd>3.1</dd>
+                <dt>DB Queries per Second</dt>
+                    <dd>2.8</dd>
+                <dt>Concurrent Users</dt>
+                    <dd>13</dd>
+            </dl>
+            
+            <h3>Graph</h3>
+            <div id="chart" height="250"></div>
+            <br/>
+            <a class="button" href='javascript:loadTab("configuration")'>back</a>
         </div>
 
         <div id="help">

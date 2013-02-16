@@ -1,8 +1,11 @@
 /*
 {"ppv":"ppv","hpp":"hpp","qpp":"queries","nservers":"nweb","demo_table":[{"n_visits":"visits","peak_start_h":"h0","peak_start_m":"m0","peak_end_h":"h1","peak_end_m":"m1"}],"cdn":27}
+
+{"ppv":"5","hpp":"15","qpp":"5","nservers":"1","notes":"Typical small one-server site ","demo_table":[{"n_visits":"1000","peak_start_h":"10","peak_start_m":"00","peak_end_h":"14","peak_end_m":"00"}]}
 */
 
   var nrows=0;
+  var plot;
   
   function readConfig() {
         function readValue(key, suffix) {
@@ -25,7 +28,6 @@
             config.demo_table = new Array();
             $.each( demoItems, function(i,v) {
                 nid = ( $(v).attr('id').match(/(demographic-data-row-)([0-9]*)/)[2] );
-                console.log(nid);
                 config.demo_table.push ({
                     "n_visits":$("#n_visits_"+nid).val(),
                     "peak_start_h":$("#peak_start_h_"+nid).val(),
@@ -124,6 +126,8 @@
   }
 
   $(function() {
+    //$.browser = {msie : (navigator.appName == 'Microsoft Internet Explorer')};
+    
     $( "#tabs" ).tabs();
     
     $( "#slider_webserver" ).slider( {
