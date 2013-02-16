@@ -1,7 +1,5 @@
 /*
-{"ppv":"ppv","hpp":"hpp","qpp":"queries","nservers":"nweb","demo_table":[{"n_visits":"visits","peak_start_h":"h0","peak_start_m":"m0","peak_end_h":"h1","peak_end_m":"m1"}],"cdn":27}
 
-{"ppv":"5","hpp":"15","qpp":"5","nservers":"1","notes":"Typical small one-server site ","demo_table":[{"n_visits":"1000","peak_start_h":"10","peak_start_m":"00","peak_end_h":"14","peak_end_m":"00"}]}
 */
 
   var nrows=0;
@@ -30,10 +28,8 @@
                 nid = ( $(v).attr('id').match(/(demographic-data-row-)([0-9]*)/)[2] );
                 config.demo_table.push ({
                     "n_visits":$("#n_visits_"+nid).val(),
-                    "peak_start_h":$("#peak_start_h_"+nid).val(),
-                    "peak_start_m":$("#peak_start_m_"+nid).val(),
-                    "peak_end_h":$("#peak_end_h_"+nid).val(),
-                    "peak_end_m":$("#peak_end_m_"+nid).val(),
+                    "peak_time": parseInt($("#peak_time_h_"+nid).val())*60+parseInt($("#peak_time_m_"+nid).val()),
+                    "peak_percent":$("#peak_percent_"+nid).val(),
                 });
                 
             });
@@ -62,10 +58,9 @@
                 data = jsonConfig['demo_table'][i];
                 addPopulation( 
                     data['n_visits'], 
-                    data['peak_start_h'], 
-                    data['peak_start_m'], 
-                    data['peak_end_h'], 
-                    data['peak_end_m']);
+                    data['peak_time'], 
+                    data['peak_percent']
+                    );
             }
         }
         
@@ -85,13 +80,14 @@
         nrows=0;
   }
 
-  function addPopulation(n_visits, peak_start_h, peak_start_m, peak_end_h, peak_end_m) {
+  function addPopulation(n_visits, peak_time, peak_percent) {
     if(n_visits==undefined) n_visits=0;
-    if(peak_start_h==undefined) peak_start_h=8;
-    if(peak_start_m==undefined) peak_start_m=0;
-    if(peak_end_h==undefined) peak_end_h=16;
-    if(peak_end_m==undefined) peak_end_m=0;
-        
+    if(peak_time==undefined) peak_time=8*60;
+    if(peak_percent==undefined) peak_percent=0;
+
+    peak_time_h = Math.floor(peak_time / 60);
+    peak_time_m = peak_time % 60;
+
     $html = "<div class='demographic-data' id='demographic-data-row-"+nrows+"'> \
                 <a href='javascript:$(\"#demographic-data-row-"+nrows+"\").remove()' class='button danger remove'>X</a> \
                 <label>Visits</label> \
@@ -99,17 +95,15 @@
                 <div style='float:left'> \
                     <label>Peak Time Start:</label> \
                     <input class='time-pick' type='text' size='2' \
-                        name='peak_start_h_"+nrows+"' id='peak_start_h_"+nrows+"' value='"+peak_start_h+"' />: \
+                        name='peak_time_h_"+nrows+"' id='peak_time_h_"+nrows+"' value='"+peak_time_h+"' />: \
                     <input class='time-pick' type='text' size='2' \
-                        name='peak_start_m_"+nrows+"' id='peak_start_m_"+nrows+"' value='"+peak_start_m+"' /> \
+                        name='peak_time_m_"+nrows+"' id='peak_time_m_"+nrows+"' value='"+peak_time_m+"' /> \
                 </div> \
                 <div style='float:right;text-align:right;'> \
-                    <label>Peak Time End:</label> \
-                    <input class='time-pick' type='text' size='2' \
-                        name='peak_end_h_"+nrows+"' id='peak_end_h_"+nrows+"' value='"+peak_end_h+"' />:\
-                    <input class='time-pick' type='text' size='2' \
-                        name='peak_end_m_"+nrows+"' id='peak_end_m_"+nrows+"' value='"+peak_end_m+"' /> \
-                </div>                                                                                                  \
+                    <label>Percent Visits within Peak Hour:</label> \
+                    <input type='text' size='2' \
+                        name='peak_percent_"+nrows+"' id='peak_percent_"+nrows+"' value='"+peak_percent+"' />\
+                </div> \
             </div>";
     $("#demographic-data-table").append($html);    
     nrows++;
@@ -128,10 +122,13 @@
   $(function() {
     //$.browser = {msie : (navigator.appName == 'Microsoft Internet Explorer')};
     
+    $.jqplot('chart',[[1,4,6,3,2,4,6,4,3,2]]);
+    
     $( "#tabs" ).tabs();
     
     $( "#slider_webserver" ).slider( {
         slide: updateCDNPercents,
+        change: updateCDNPercents,
         value: 100,
     });
     updateCDNPercents();

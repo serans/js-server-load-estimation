@@ -11,9 +11,9 @@
 
 <script src="./uniroot.js"></script>
 <script src="./configurations.js"></script>
-<script src="./normalDistribution.js"></script>
 <script src="./js-sle-main.js"></script>
 <script src="./js-sle-ui.js"></script>
+<script src="./tests.js"></script>
 
 <link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
@@ -74,6 +74,7 @@
             <a class="button" href="javascript:addPopulation()">Add Population</a>
             
             <h3>Website Statistics</h3>
+            <label for="avd">Visit Duration (minutes):</label><input type="text" name="avd" id="avd" />
             <label for="ppv">Pages per visit:</label><input type="text" name="ppv" id="ppv" />
             <label for="hpp">Hits per page:</label><input type="text" name="hpp" id="hpp" />
 
@@ -107,16 +108,31 @@
         </div>
             
         <div id="report">
-            <h3>Peak Data</h3>
-            <dl>
-                <dt>Hits Per Second</dt>
-                    <dd>3.1</dd>
-                <dt>DB Queries per Second</dt>
-                    <dd>2.8</dd>
-                <dt>Concurrent Users</dt>
-                    <dd>13</dd>
-            </dl>
+        
+            <div style="float:left;width:50%;text-align:center">
+                <h3>Peak Data</h3>
+                <dl>
+                    <dt>Hits Per Second</dt>
+                        <dd>3.1</dd>
+                    <dt>DB Queries per Second</dt>
+                        <dd>2.8</dd>
+                    <dt>Concurrent Users</dt>
+                        <dd>13</dd>
+                </dl>
+            </div>
             
+            <div  style="float:left;width:50%;text-align:center">
+                <h3>General Data</h3>
+                <dl>
+                    <dt>Monthly Visits</dt>
+                        <dd>43423</dd>
+                    <dt>Daily Visits</dt>
+                        <dd>2443</dd>
+                    <dt>Concurrent Users</dt>
+                        <dd>13</dd>
+                </dl>
+            </div>
+               
             <h3>Graph</h3>
             <div id="chart" height="250"></div>
             <br/>
@@ -124,7 +140,10 @@
         </div>
 
         <div id="help">
-            Help, I need somebody
+            <h3>Configuration</h3>
+            <h3>Report</h3>
+            <h3>FAQs</h3>
+            
         </div>
     
     </div>
