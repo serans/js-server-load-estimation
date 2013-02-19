@@ -6,7 +6,7 @@ input[type='text'].nservers {
 }*/
 
 body {
-    background: url('img/body-bg.png');
+    background: url('../img/body-bg.png');
     color: #444;
     font-family: Verdana, Arial, sans-serif;
 }

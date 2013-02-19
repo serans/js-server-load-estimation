@@ -1,7 +1,21 @@
-/*
- * Error functions
- */
+/*  js-server-load-estimation
+    Copyright (C) 2013  Miguel Hermo Serans
 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    contact: code@mhserans.com
+*/
 
 /**
  * Error Function.
@@ -82,17 +96,7 @@ NormalDistribution.prototype.f = function(x) {
 }
 
 NormalDistribution.prototype.cdf = function(x) {
-    var z = (x-this.mu)/Math.sqrt(2*this.sigma*this.sigma);
-    var t = 1/(1+0.3275911*Math.abs(z));
-    var a1 =  0.254829592;
-    var a2 = -0.284496736;
-    var a3 =  1.421413741;
-    var a4 = -1.453152027;
-    var a5 =  1.061405429;
-    var erf = 1-(((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*Math.exp(-z*z);
-    var sign = 1;
-    if(z < 0) { sign = -1; }
-    return (1/2)*(1+sign*erf);
+    return 0.5*(1.0+erf( (x-this.mu) / (this.sigma*1.41421356237) ))
 }
 
 
@@ -102,27 +106,54 @@ NormalDistribution.prototype.diff = function(x) {
     }
 }
 
+/**
+ * Scaled normal function
+ * Normal distribution scaled so that:
+ *    cdf(0) = 0
+ *    cdf(24)= 1
+ */
+function ScaledNormalDistribution(mu, sigma) {
+    this.n = new NormalDistribution(mu,sigma);
+}
+
+ScaledNormalDistribution.prototype.f = function(x) { 
+    return ( (this.n.f(x)-this.n.cdf(0)) / (this.n.cdf(24)-this.n.cdf(0)) );
+}
+
+ScaledNormalDistribution.prototype.cdf = function(x) { 
+    return ( (this.n.cdf(x)-this.n.cdf(0))/(this.n.cdf(24)-this.n.cdf(0)) );
+}
+
+ScaledNormalDistribution.prototype.diff = function(x) { 
+    return ( this.n.difff(x) );
+}
 
 /**
- * Population
+ * CyclicDist
+ * Distribution that is cyclical in the range 0-24 if
+ * µ is within that range
  */
-function Population(mu, sigma, n) {
-    this.dist = new NormalDistribution(mu, sigma);
-    this.n = n;
+function CyclicDist(mu, sigma) {
+    this.dists = new DistributionSum();
+    this.dists.dists.push( new NormalDistribution(mu-24, sigma) );
+    this.dists.dists.push( new NormalDistribution(mu,    sigma) );
+    this.dists.dists.push( new NormalDistribution(mu+24, sigma) );
+    
+    this.cdf_0  = this.dists.cdf(0);
+    this.cdf_24 = this.dists.cdf(24);
 }
 
-Population.prototype.f = function(x) {
-    return this.dist.f(x)*this.n;
+CyclicDist.prototype.f = function(x) { 
+    return ( (this.dists.f(x)-this.cdf_0) / (this.cdf_24-this.cdf_0) );
 }
 
-Population.prototype.diff = function(x) {
-    return this.dist.diff(x)*this.n;
+CyclicDist.prototype.cdf = function(x) { 
+    return ( (this.dists.cdf(x)-this.cdf_0) / (this.cdf_24-this.cdf_0) );
 }
 
-Population.prototype.cdf = function(x) {
-    return this.dist.cdf(x)*this.n;
+CyclicDist.prototype.diff = function(x) { 
+    return ( this.dists.diff(x) );
 }
-
 
 /**
  * Sum of distributions
@@ -162,35 +193,49 @@ DistributionSum.prototype.diff = function(x) {
     return sum;
 }
 
+function pphToSigma(x) {
+    return 0.5/(erfinv(x)*Math.sqrt(2));
+}
+
+function pphTest(){
+    for(pph = 0.04; pph<0.06; pph+=0.005) {
+        sigma = pphToSigma(pph);
+        a = new NormalDistribution(12, sigma);
+        b = new CyclicDist(12, sigma);
+        console.log(pph+";"+(a.cdf(12.5)-a.cdf(11.5))+";"+(b.cdf(12.5)-b.cdf(11.5)));
+    }
+}
+
+/**
+ * 
+ */
 function makeEstimation( config ) {
 
-    var graphPoints = new Array();
-    var peakHits;
-    var peakHitsTime;
-
-    function timeToMinutes(h,m) { return parseInt(h)*60+parseInt(m); };
-
+    var results;
+    
     var n_pop = config.demo_table.length;
     
     if(n_pop==0) return;
     
-    var dist = new NormalDistributionSum();
+    var dist = new DistributionSum();
     for(var i=0; i<n_pop; i++) {
         console.log( "pop: "+config.demo_table[i] );
         var n = parseInt(config.demo_table[i].n_visits);
+        var mu = parseInt(config.demo_table[i].peak_time);
+        var sigma = 0; //TO-DO
         
-        //peak time finishes the next day
-        if(end<start) { end+=1440; }
-        
-        dist.dists.push( new Population( (end+start)/2, end-start, n) );
+        dist.dists.push( new Population( mu, sigma, n) );
     }
     
+    //Find maxima
+    
+    results.graphPoints = new Array();
     for(var i=0; i<1440; i+=30) {
-        graphPoints.push(dist.f(i) );
+        results.graphPoints.push(dist.f(i) );
     }
     return graphPoints;
 }
-/*
+
 function drawGraph(chart_id, highlight) {
     _options = {
         min_x: 0,
@@ -198,8 +243,10 @@ function drawGraph(chart_id, highlight) {
         increment: 0.5,
         title: 'f(x)',
     }
-
-    data = new Array(1,3,4,5,6,5,3,2,5,7,8,9);
-
+    data = new Array();
+    for(var i=0; i<1440; i+=30) {
+        data.push([i,Math.random()*100]);
+    }
     plot = $.jqplot(chart_id, [data]);
-}*/
+    return plot;
+}

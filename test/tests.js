@@ -79,3 +79,40 @@ buster.testCase("Distribution Sum", {
         assert.withinPrecission( distSum.cdf(0.5) , 2*0.691462);
     },
 });
+
+buster.testCase("Scaled Normal Distribution", {
+    "cdf(x)": function() {
+        snd = new ScaledNormalDistribution(12,4);
+
+        assert.withinPrecission( snd.cdf(0) , 0);
+        assert.withinPrecission( snd.cdf(12)  , 0.5);
+        assert.withinPrecission( snd.cdf(24)  , 1);
+    },
+});
+
+buster.testCase("Cyclic Normal Distribution", {
+    "cyclic": function() {
+        for(var i=0; i<24; i++) {
+            cd = new CyclicDist(i,4);
+            assert.withinPrecission(cd.f(0), cd.f(24));
+            assert.withinPrecission(cd.diff(0), cd.diff(24));
+        }
+    },
+    "scale": function() {
+        for(var i=0; i<24; i++) {
+            cd = new CyclicDist(i,4);
+            assert.withinPrecission(cd.cdf(0), 0);
+            assert.withinPrecission(cd.cdf(24), 1);
+        }
+    },
+});
+
+buster.testCase("PPH to Sigma", {
+    "correct estimation": function() {
+        for(pph = 0.05; pph<0.2; pph+=0.05) {
+            sigma = pphToSigma(pph);
+            a = new NormalDistribution(12, sigma);
+            assert.withinPrecission(a.cdf(12.5)-a.cdf(11.5),pph);
+        }
+    },
+});
