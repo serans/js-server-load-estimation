@@ -1,3 +1,5 @@
+/*
+{"ppv":"10","hpp":"18","qpp":"8","nservers":"1","notes":"Test Scenario","demo_table":[{"n_visits":"300","peak_time":480,"peak_percent":"8"},{"n_visits":"400","peak_time":1200,"peak_percent":"9"}]}
 /*  js-server-load-estimation
     Copyright (C) 2013  Miguel Hermo Serans
 
@@ -16,6 +18,7 @@
 
     contact: code@mhserans.com
 */
+
 
 /**
  * Error Function.
@@ -110,14 +113,14 @@ NormalDistribution.prototype.diff = function(x) {
  * Scaled normal function
  * Normal distribution scaled so that:
  *    cdf(0) = 0
- *    cdf(24)= 1
+ *    cdf(24*60*60)= 1
  */
 function ScaledNormalDistribution(mu, sigma) {
     this.n = new NormalDistribution(mu,sigma);
 }
 
 ScaledNormalDistribution.prototype.f = function(x) { 
-    return ( (this.n.f(x)-this.n.cdf(0)) / (this.n.cdf(24)-this.n.cdf(0)) );
+    return ( this.n.f(x) / (this.n.cdf(24)-this.n.cdf(0)) );
 }
 
 ScaledNormalDistribution.prototype.cdf = function(x) { 
@@ -135,16 +138,16 @@ ScaledNormalDistribution.prototype.diff = function(x) {
  */
 function CyclicDist(mu, sigma) {
     this.dists = new DistributionSum();
-    this.dists.dists.push( new NormalDistribution(mu-24, sigma) );
-    this.dists.dists.push( new NormalDistribution(mu,    sigma) );
-    this.dists.dists.push( new NormalDistribution(mu+24, sigma) );
+    this.dists.add( new NormalDistribution((mu-24), sigma) );
+    this.dists.add( new NormalDistribution(mu,    sigma) );
+    this.dists.add( new NormalDistribution((mu+24), sigma) );
     
     this.cdf_0  = this.dists.cdf(0);
     this.cdf_24 = this.dists.cdf(24);
 }
 
 CyclicDist.prototype.f = function(x) { 
-    return ( (this.dists.f(x)-this.cdf_0) / (this.cdf_24-this.cdf_0) );
+    return ( this.dists.f(x) / (this.cdf_24-this.cdf_0) );
 }
 
 CyclicDist.prototype.cdf = function(x) { 
@@ -160,15 +163,23 @@ CyclicDist.prototype.diff = function(x) {
  */
 function DistributionSum() {
     this.dists = new Array();
+    this.weights = new Array();
+    this.sum_weight=0;
+}
+
+DistributionSum.prototype.add = function( d, n ) {
+    if(n==undefined) n=1;
+    this.dists.push(d);
+    this.weights.push(n);
+    this.sum_weight+=n;
 }
 
 DistributionSum.prototype.f = function(x) {
-    
     var len=this.dists.length;
     var sum=0;
     
-    for(i=0; i<this.dists.length; i++) {
-        sum+=this.dists[i].f(x);
+    for(var i=0; i<len; i++) {
+        sum += this.dists[i].f(x) * (this.weights[i]/this.sum_weight);
     }
     return sum;
 }
@@ -177,8 +188,8 @@ DistributionSum.prototype.cdf = function(x) {
     var len=this.dists.length;
     var sum=0;
     
-    for(i=0; i<this.dists.length; i++) {
-        sum+=this.dists[i].cdf(x);
+    for(var i=0; i<len; i++) {
+        sum += this.dists[i].cdf(x) * (this.weights[i]/this.sum_weight);
     }
     return sum;
 }
@@ -187,66 +198,143 @@ DistributionSum.prototype.diff = function(x) {
     var len=this.dists.length;
     var sum=0;
     
-    for(i=0; i<this.dists.length; i++) {
+    for(var i=0; i<len; i++) {
         sum+=this.dists[i].diff(x);
     }
     return sum;
 }
 
 function pphToSigma(x) {
-    return 0.5/(erfinv(x)*Math.sqrt(2));
+    return (0.5)/(erfinv(x)*Math.sqrt(2));
 }
 
-function pphTest(){
-    for(pph = 0.04; pph<0.06; pph+=0.005) {
-        sigma = pphToSigma(pph);
-        a = new NormalDistribution(12, sigma);
-        b = new CyclicDist(12, sigma);
-        console.log(pph+";"+(a.cdf(12.5)-a.cdf(11.5))+";"+(b.cdf(12.5)-b.cdf(11.5)));
-    }
-}
+function getEstimation( config ) {
 
-/**
- * 
- */
-function makeEstimation( config ) {
-
-    var results;
-    
+    var results = new Object();
     var n_pop = config.demo_table.length;
     
     if(n_pop==0) return;
     
     var dist = new DistributionSum();
     for(var i=0; i<n_pop; i++) {
-        console.log( "pop: "+config.demo_table[i] );
         var n = parseInt(config.demo_table[i].n_visits);
-        var mu = parseInt(config.demo_table[i].peak_time);
-        var sigma = 0; //TO-DO
-        
-        dist.dists.push( new Population( mu, sigma, n) );
+        var mu = parseInt(config.demo_table[i].peak_time)/60;
+        var pph = parseInt(config.demo_table[i].peak_percent)/100;
+
+        dist.add( new CyclicDist( mu, pphToSigma(pph) ) , n);
+    }
+
+    //Find min - max
+    var minmax = findMinMax ( dist );
+    n_max = (dist.cdf(minmax.max_x+0.0003)-dist.cdf(minmax.max_x-0.0003))*dist.sum_weight;
+    n_min = (dist.cdf(minmax.min_x+0.0003)-dist.cdf(minmax.min_x-0.0003))*dist.sum_weight;
+
+    //calculate parameters
+    var estimation = {
+        "max": calculateParams(config, n_max),
+        "min": calculateParams(config, n_min),
+    };
+
+    //Graph Results
+    var graphPoints = new Array();
+    for(var i=0; i<=24; i++) {
+        graphPoints.push( [i,dist.f(i)*dist.sum_weight] );
     }
     
-    //Find maxima
-    
-    results.graphPoints = new Array();
-    for(var i=0; i<1440; i+=30) {
-        results.graphPoints.push(dist.f(i) );
-    }
-    return graphPoints;
+    return ({
+        "min_x":minmax.min_x,
+        "max_x":minmax.max_x,
+        "plot_data":graphPoints,
+        "params":estimation,
+    });
 }
 
-function drawGraph(chart_id, highlight) {
-    _options = {
-        min_x: 0,
-        max_x: 24,
-        increment: 0.5,
-        title: 'f(x)',
+function calculateParams( config, n ) {
+    var ppv = parseInt(config.ppv);
+    var hpp = parseInt(config.hpp);
+    var qpp = parseInt(config.qpp);
+
+    return {
+        "pageviews":Math.round(n*ppv*100)/100,
+        "hps": Math.round(n*ppv*hpp*100)/100,
+        "dbqps": Math.round(n*ppv*qpp*1003)/100,
+        "users": 1,
+    };
+}
+
+function findMinMax(dist) {
+    var min_x=0;
+    var min_y=1;
+    
+    var max_x=0;
+    var max_y=0;
+    
+    for(var x=0; x<24; x+=0.01) {
+        var y = dist.f(x);
+        if(y<min_y) {
+            min_y=y;
+            min_x=x;
+        }
+        if(y>max_y) {
+            max_y=y;
+            max_x=x;
+        }
     }
-    data = new Array();
-    for(var i=0; i<1440; i+=30) {
-        data.push([i,Math.random()*100]);
+    
+    return( {"min_x":min_x, "max_x":max_x} );
+}
+
+function drawPlot(data, minima, maxima) {
+
+    var options = {
+        axes: {
+            xaxis: {
+                'label':'time',
+                min:0,
+                max:24,
+            },
+            yaxis: {
+                min:0,
+            },
+        },
+        title: 'server load',
+        series: [{
+            markerOptions: {
+                show: false
+            }
+        }]
+    };
+    /*
+    if(minima!=undefined && minima!=undefined ) {
+        console.log(minima);
+        options.canvasOverlay = {
+            show: true,
+            objects: [
+                {
+                    verticalLine: {
+                        name: 'min',
+                        x: minima,
+                        lineWidth: 5,
+                        yOffset: 0,
+                        lineCap: 'butt',
+                        color: 'rgb(90, 190, 90)',
+                        shadow: false
+                    }
+                },
+                {
+                    verticalLine: {
+                        name: 'max',
+                        x: maxima,
+                        lineWidth: 5,
+                        yOffset: 0,
+                        lineCap: 'butt',
+                        color: 'rgb(190, 90, 90)',
+                        shadow: false
+                    }
+                }
+            ]
+        };
     }
-    plot = $.jqplot(chart_id, [data]);
-    return plot;
+    */
+    $.jqplot('chart',[data,minima], options ).redraw();
 }

@@ -1,8 +1,17 @@
+function pseudointegrate(f, from, to, nsteps) {
+    sum=0;
+    inc=(to-from)/nsteps;
+    for(var x=from; x<to; x+=inc) {
+        sum+=f(x)*inc;
+    }
+    return sum;
+}
+
 buster.assertions.add( "withinPrecission", {
     assert: function (a,b) {
         var va = parseFloat(a);
         var vb = parseFloat(b)
-        var precission=0.00001;
+        var precission=0.0001;
         return (Math.abs(a-b)<precission );
     },
     assertMessage: "${0} differs from ${1} more than allowed",
@@ -60,23 +69,31 @@ buster.testCase("Normal Distribution", {
 buster.testCase("Distribution Sum", {
     "Sum pdf(x)": function() {
         distSum = new DistributionSum();
-        distSum.dists.push(new NormalDistribution(0,1));
-        distSum.dists.push(new NormalDistribution(0,1));
+        distSum.add(new NormalDistribution(0,1));
+        distSum.add(new NormalDistribution(0,1));
 
-        assert.withinPrecission( distSum.f(0) ,   2*0.398942);
-        assert.withinPrecission( distSum.f(0.1) , 2*0.396953);
-        assert.withinPrecission( distSum.f(0.3) , 2*0.381388);
-        assert.withinPrecission( distSum.f(0.5) , 2*0.352065);
+        assert.withinPrecission( distSum.f(0)   , 0.398942);
+        assert.withinPrecission( distSum.f(0.1) , 0.396953);
+        assert.withinPrecission( distSum.f(0.3) , 0.381388);
+        assert.withinPrecission( distSum.f(0.5) , 0.352065);
     },
     "Sum cdf(x)": function() {
         distSum = new DistributionSum();
-        distSum.dists.push(new NormalDistribution(0,1));
-        distSum.dists.push(new NormalDistribution(0,1));
+        distSum.add(new NormalDistribution(0,1));
+        distSum.add(new NormalDistribution(0,1));
         
-        assert.withinPrecission( distSum.cdf(0) ,   2*0.5);
-        assert.withinPrecission( distSum.cdf(0.1) , 2*0.539828);
-        assert.withinPrecission( distSum.cdf(0.3) , 2*0.617911);
-        assert.withinPrecission( distSum.cdf(0.5) , 2*0.691462);
+        assert.withinPrecission( distSum.cdf(0)   , 0.5);
+        assert.withinPrecission( distSum.cdf(0.1) , 0.539828);
+        assert.withinPrecission( distSum.cdf(0.3) , 0.617911);
+        assert.withinPrecission( distSum.cdf(0.5) , 0.691462);
+    },
+    "Integral 0-24 Sum. f(x) ~= 1": function() {
+        ds = new DistributionSum();
+        ds.add(new CyclicDist(8, 4),3);
+        ds.add(new CyclicDist(20, 4),5);
+        assert.withinPrecission( 
+            pseudointegrate( function(x) { return ds.f(x) }, 0, 24, 24),
+            1);
     },
 });
 
@@ -91,14 +108,21 @@ buster.testCase("Scaled Normal Distribution", {
 });
 
 buster.testCase("Cyclic Normal Distribution", {
-    "cyclic": function() {
+    "Integral 0-24 f(x) ~= 1": function() {
+        for(var i=0; i<24; i++) {
+            cd = new CyclicDist(i, 4);
+            assert.withinPrecission( 
+                pseudointegrate( function(x) { return cd.f(x) }, 0, 24, 24),
+                1);
+        }
+    },
+    "is cyclic": function() {
         for(var i=0; i<24; i++) {
             cd = new CyclicDist(i,4);
             assert.withinPrecission(cd.f(0), cd.f(24));
-            assert.withinPrecission(cd.diff(0), cd.diff(24));
         }
     },
-    "scale": function() {
+    "cdf has correct scale": function() {
         for(var i=0; i<24; i++) {
             cd = new CyclicDist(i,4);
             assert.withinPrecission(cd.cdf(0), 0);

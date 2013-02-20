@@ -100,7 +100,8 @@
             <textarea id="notes" style="height:3em;width:100%"></textarea>
             
             <div style="text-align:right;margin-top:1em">
-            <a href='javascript:loadTab("report")' class="button">Generate Report</a>
+            <!--<a href='javascript:generateReport()' class="button">Generate Report</a>-->
+            <a href='#report' class="button">Generate Report</a>
             </div>
             
             
@@ -109,30 +110,35 @@
         <div id="report">
         
             <div style="float:left;width:50%;text-align:center">
-                <h3>Peak Data</h3>
+                <h3>Peak Load <span id="max_time"></span></h3>
                 <dl>
-                    <dt>Hits Per Second</dt>
-                        <dd>3.1</dd>
+                    <dt>Hits per Second</dt>
+                        <dd><span id="max_hps"></span></dd>
+                    <dt>PageViews per Second</dt>
+                        <dd><span id="max_pageviews"></span></dd>
                     <dt>DB Queries per Second</dt>
-                        <dd>2.8</dd>
+                        <dd><span id="max_dbqps"></span></dd>
                     <dt>Concurrent Users</dt>
-                        <dd>13</dd>
+                        <dd><span id="max_users"></span></dd>
                 </dl>
             </div>
             
             <div  style="float:left;width:50%;text-align:center">
-                <h3>General Data</h3>
+                <h3>Minimum Load <span id="min_time"></span></h3>
                 <dl>
-                    <dt>Monthly Visits</dt>
-                        <dd>43423</dd>
-                    <dt>Daily Visits</dt>
-                        <dd>2443</dd>
+                    <dt>Hits Per Second</dt>
+                        <dd><span id="min_hps"></span></dd>
+                    <dt>PageViews per Second</dt>
+                        <dd><span id="min_pageviews"></span></dd>
+                    <dt>DB Queries per Second</dt>
+                        <dd><span id="min_dbqps"></span></dd>
                     <dt>Concurrent Users</dt>
-                        <dd>13</dd>
+                        <dd><span id="min_users"></span></dd>
                 </dl>
             </div>
                
-            <h3>Graph</h3>
+
+            <br/>
             <div id="chart" height="250"></div>
             <br/>
             <a class="button" href='javascript:loadTab("configuration")'>back</a>
