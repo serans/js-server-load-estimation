@@ -11,8 +11,6 @@
 <link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
 
-<script src="js/configurations.js"></script>
-<script src="js/tests.js"></script>
 <script src="js/libs/jquery.jqplot.js"></script>
 
 <script src="js/uniroot.js"></script>
@@ -122,28 +120,28 @@
                     <tbody>
                     <tr>
                         <td data-label="Period">Peak</td>
-                        <td data-label="C. Users">1</td>
-                        <td data-label="Page Views">0</td>
-                        <td data-label="Server Hits">2</td>
-                        <td data-label="DB Queries">5</td>
+                        <td data-label="C. Users"><span id="max_cusers">-</span></td>
+                        <td data-label="Page Views"><span id="max_pviews">-</span></td>
+                        <td data-label="Server Hits"><span id="max_hits">-</span></td>
+                        <td data-label="DB Queries"><span id="max_dbq">-</span></td>
                     </tr><tr>
-                        <td data-label="Period">Low</td>
-                        <td data-label="C. Users">1</td>
-                        <td data-label="Page Views">0</td>
-                        <td data-label="Server Hits">2</td>
-                        <td data-label="DB Queries">5</td>
+                        <td data-label="Period">Min</td>
+                        <td data-label="C. Users"><span id="min_cusers">-</span></td>
+                        <td data-label="Page Views"><span id="min_pviews">-</span></td>
+                        <td data-label="Server Hits"><span id="min_hits">-</span></td>
+                        <td data-label="DB Queries"><span id="min_dbq">-</span></td>
                     </tr><tr>
                         <td data-label="Period">Daily</td>
-                        <td data-label="C. Users">-</td>
-                        <td data-label="Page Views">0</td>
-                        <td data-label="Server Hits">2</td>
-                        <td data-label="DB Queries">5</td>
+                        <td data-label="C. Users"><span id="daily_cusers">-</span></td>
+                        <td data-label="Page Views"><span id="daily_pviews">-</span></td>
+                        <td data-label="Server Hits"><span id="daily_hits">-</span></td>
+                        <td data-label="DB Queries"><span id="daily_dbq">-</span></td>
                     </tr><tr>
                         <td data-label="Period">Monthly</td>
-                        <td data-label="C. Users">-</td>
-                        <td data-label="Page Views">0</td>
-                        <td data-label="Server Hits">2</td>
-                        <td data-label="DB Queries">5</td>                    
+                        <td data-label="C. Users"><span id="monthly_cusers">-</span></td>
+                        <td data-label="Page Views"><span id="monthly_pviews">-</span></td>
+                        <td data-label="Server Hits"><span id="monthly_hits">-</span></td>
+                        <td data-label="DB Queries"><span id="monthly_dbq">-</span></td>           
                     </tr>
                     </tbody>
                 </table>

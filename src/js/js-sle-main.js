@@ -224,16 +224,25 @@ function getEstimation( config ) {
         dist.add( new CyclicDist( mu, pphToSigma(pph) ) , n);
     }
 
-    //Find min - max
+    //Find min - max visits per second (0.0003 hours ~ 1 second)
     var minmax = findMinMax ( dist );
-    n_max = (dist.cdf(minmax.max_x+0.0003)-dist.cdf(minmax.max_x-0.0003))*dist.sum_weight;
-    n_min = (dist.cdf(minmax.min_x+0.0003)-dist.cdf(minmax.min_x-0.0003))*dist.sum_weight;
+    var n_max_s = (dist.cdf(minmax.max_x+0.0003)-dist.cdf(minmax.max_x-0.0003))*dist.sum_weight;
+    var n_min_s = (dist.cdf(minmax.min_x+0.0003)-dist.cdf(minmax.min_x-0.0003))*dist.sum_weight;
 
     //calculate parameters
     var estimation = {
-        "max": calculateParams(config, n_max),
-        "min": calculateParams(config, n_min),
+        "max": calculateParams(config, n_max_s),
+        "min": calculateParams(config, n_min_s),
+        "daily": calculateParams(config, dist.sum_weight),
+        "monthly": calculateParams(config, dist.sum_weight*30),
     };
+    
+    //calculate concurrent users
+    var range = config.avd/60;
+    var max_cusers = ((dist.cdf(minmax.max_x+range)-dist.cdf(minmax.max_x-range))*dist.sum_weight); // +1??
+    var min_cusers = ((dist.cdf(minmax.min_x+range)-dist.cdf(minmax.min_x-range))*dist.sum_weight); // +1??
+    estimation.max.cusers = Math.round(max_cusers*100)/100;
+    estimation.min.cusers = Math.round(min_cusers*100)/100;
 
     //Graph Results
     var graphPoints = new Array();
@@ -259,11 +268,10 @@ function calculateParams( config, n ) {
     if (config.cdn!=undefined) cdn = config.cdn/100;
 
     return {
-        "pageviews": Math.round(n*ppv*100)/100,
-        "hps":  (cdn*Math.round(n*ppv*hpp*100)/(nservers*100)),
-        "hps_cdn": ((1-cdn)*Math.round(n*ppv*hpp*100)/(nservers*100)),
-        "dbqps": Math.round(n*qpp*1003)/100,
-        "users": 1,
+        "pviews":   Math.round(n*ppv*100)/100,
+        "dbq":      Math.round(n*ppv*100*qpp)/100,
+        "hits":     Math.round(n*ppv*100*hpp*cdn/(nservers*100)),
+        "hits_cdn": ((1-cdn)*Math.round(n*ppv*hpp*100)/(nservers*100)),
     };
 }
 

@@ -30,6 +30,7 @@ function readConfig() {
     }
     
     config = {
+        "avd": readValue("avd"),
         "ppv": readValue("ppv"),
         "hpp": readValue("hpp"),
         "qpp": readValue("qpp"),
@@ -63,6 +64,7 @@ function importJSON(jsonConfig) {
         if(jsonConfig[key]!=undefined) $('#'+key).val(jsonConfig[key])
     }
     
+    applyValue('avd');
     applyValue('ppv');
     applyValue('hpp');
     applyValue('qpp');
@@ -202,16 +204,25 @@ function generateReport() {
     estimation = getEstimation(readConfig());
     loadTab('report');
     drawPlot(estimation.plot_data, estimation.min_x, estimation.max_x);
-    $('#max_hps').text(estimation.params.max.hps);
-    $('#max_dbqps').text(estimation.params.max.dbqps);
-    $('#max_users').text(estimation.params.max.users);
-    $('#max_pageviews').text(estimation.params.max.pageviews);
-
-    $('#min_hps').text(estimation.params.min.hps);
-    $('#min_dbqps').text(estimation.params.min.dbqps);
-    $('#min_users').text(estimation.params.min.users);
-    $('#min_pageviews').text(estimation.params.min.pageviews);
     
+    $('#max_hits').text(estimation.params.max.hits);
+    $('#max_dbq').text(estimation.params.max.dbq);
+    $('#max_cusers').text(estimation.params.max.cusers);
+    $('#max_pviews').text(estimation.params.max.pviews);
+
+    $('#min_hits').text(estimation.params.min.hits);
+    $('#min_dbq').text(estimation.params.min.dbq);
+    $('#min_cusers').text(estimation.params.min.cusers);
+    $('#min_pviews').text(estimation.params.min.pviews);
+    
+    $('#daily_hits').text(estimation.params.daily.hits);
+    $('#daily_dbq').text(estimation.params.daily.dbq);
+    $('#daily_pviews').text(estimation.params.daily.pviews);
+        
+    $('#monthly_hits').text(estimation.params.monthly.hits);
+    $('#monthly_dbq').text(estimation.params.monthly.dbq);
+    $('#monthly_pviews').text(estimation.params.monthly.pviews);
+        
     function hour_to_hhmm(t) {
         var h = Math.floor(t);
         var m = Math.round((t-h)*60);
@@ -241,7 +252,7 @@ function drawPlot(data, minima, maxima) {
                 min:0,
             },
         },
-        title: 'hits per second',
+        title: 'visits',
         series: [{
             markerOptions: {
                 show: false
