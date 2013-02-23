@@ -211,4 +211,42 @@ function generateReport() {
     $('#min_dbqps').text(estimation.params.min.dbqps);
     $('#min_users').text(estimation.params.min.users);
     $('#min_pageviews').text(estimation.params.min.pageviews);
+    
+    function hour_to_hhmm(t) {
+        var h = Math.floor(t);
+        var m = Math.round((t-h)*60);
+        console.log(m);
+        if(h<10) h="0"+h;
+        if(m<10) m="0"+m;
+        
+        return h+":"+m;
+    }
+    
+    $('#max_time').text(hour_to_hhmm(estimation.max_x));
+    $('#min_time').text(hour_to_hhmm(estimation.min_x));
+}
+
+
+function drawPlot(data, minima, maxima) {
+
+    var options = {
+        axes: {
+            xaxis: {
+                'label':'time',
+                min:0,
+                max:24,
+            },
+            yaxis: {
+                visible: false,
+                min:0,
+            },
+        },
+        title: 'hits per second',
+        series: [{
+            markerOptions: {
+                show: false
+            }
+        }]
+    };
+    $.jqplot('chart',[data,minima], options ).redraw();
 }

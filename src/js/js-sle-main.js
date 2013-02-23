@@ -253,11 +253,16 @@ function calculateParams( config, n ) {
     var ppv = parseInt(config.ppv);
     var hpp = parseInt(config.hpp);
     var qpp = parseInt(config.qpp);
+    
+    var nservers = parseInt(config.nservers);
+    var cdn = 1;
+    if (config.cdn!=undefined) cdn = config.cdn/100;
 
     return {
-        "pageviews":Math.round(n*ppv*100)/100,
-        "hps": Math.round(n*ppv*hpp*100)/100,
-        "dbqps": Math.round(n*ppv*qpp*1003)/100,
+        "pageviews": Math.round(n*ppv*100)/100,
+        "hps":  (cdn*Math.round(n*ppv*hpp*100)/(nservers*100)),
+        "hps_cdn": ((1-cdn)*Math.round(n*ppv*hpp*100)/(nservers*100)),
+        "dbqps": Math.round(n*qpp*1003)/100,
         "users": 1,
     };
 }
@@ -284,57 +289,3 @@ function findMinMax(dist) {
     return( {"min_x":min_x, "max_x":max_x} );
 }
 
-function drawPlot(data, minima, maxima) {
-
-    var options = {
-        axes: {
-            xaxis: {
-                'label':'time',
-                min:0,
-                max:24,
-            },
-            yaxis: {
-                min:0,
-            },
-        },
-        title: 'server load',
-        series: [{
-            markerOptions: {
-                show: false
-            }
-        }]
-    };
-    /*
-    if(minima!=undefined && minima!=undefined ) {
-        console.log(minima);
-        options.canvasOverlay = {
-            show: true,
-            objects: [
-                {
-                    verticalLine: {
-                        name: 'min',
-                        x: minima,
-                        lineWidth: 5,
-                        yOffset: 0,
-                        lineCap: 'butt',
-                        color: 'rgb(90, 190, 90)',
-                        shadow: false
-                    }
-                },
-                {
-                    verticalLine: {
-                        name: 'max',
-                        x: maxima,
-                        lineWidth: 5,
-                        yOffset: 0,
-                        lineCap: 'butt',
-                        color: 'rgb(190, 90, 90)',
-                        shadow: false
-                    }
-                }
-            ]
-        };
-    }
-    */
-    $.jqplot('chart',[data,minima], options ).redraw();
-}

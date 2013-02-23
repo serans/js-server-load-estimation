@@ -1,22 +1,24 @@
-<html>
-<head><title></title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es-es" xml:lang="es-es">
+<head><title>Server Load Estimation</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
-<!--
 <script src="http://cachedcommons.org/cache/jqplot/0.9.7/javascripts/jqplot.js"></script>
+
+<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
+
 <script src="js/configurations.js"></script>
 <script src="js/tests.js"></script>
--->
 <script src="js/libs/jquery.jqplot.js"></script>
 
 <script src="js/uniroot.js"></script>
 <script src="js/js-sle-main.js"></script>
 <script src="js/js-sle-ui.js"></script>
 
-<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="css/style.css" />
 
 </head>
@@ -108,35 +110,43 @@
         </div>
             
         <div id="report">
-        
-            <div style="float:left;width:50%;text-align:center">
-                <h3>Peak Load <span id="max_time"></span></h3>
-                <dl>
-                    <dt>Hits per Second</dt>
-                        <dd><span id="max_hps"></span></dd>
-                    <dt>PageViews per Second</dt>
-                        <dd><span id="max_pageviews"></span></dd>
-                    <dt>DB Queries per Second</dt>
-                        <dd><span id="max_dbqps"></span></dd>
-                    <dt>Concurrent Users</dt>
-                        <dd><span id="max_users"></span></dd>
-                </dl>
-            </div>
-            
-            <div  style="float:left;width:50%;text-align:center">
-                <h3>Minimum Load <span id="min_time"></span></h3>
-                <dl>
-                    <dt>Hits Per Second</dt>
-                        <dd><span id="min_hps"></span></dd>
-                    <dt>PageViews per Second</dt>
-                        <dd><span id="min_pageviews"></span></dd>
-                    <dt>DB Queries per Second</dt>
-                        <dd><span id="min_dbqps"></span></dd>
-                    <dt>Concurrent Users</dt>
-                        <dd><span id="min_users"></span></dd>
-                </dl>
-            </div>
-               
+
+                <table>
+                    <thead>
+                        <th>&nbsp;</th>
+                        <th>Concurrent Users</th>
+                        <th>Page Views</th>
+                        <th>Server Hits</th>
+                        <th>DB Queries</th>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td data-label="Period">Peak</td>
+                        <td data-label="C. Users">1</td>
+                        <td data-label="Page Views">0</td>
+                        <td data-label="Server Hits">2</td>
+                        <td data-label="DB Queries">5</td>
+                    </tr><tr>
+                        <td data-label="Period">Low</td>
+                        <td data-label="C. Users">1</td>
+                        <td data-label="Page Views">0</td>
+                        <td data-label="Server Hits">2</td>
+                        <td data-label="DB Queries">5</td>
+                    </tr><tr>
+                        <td data-label="Period">Daily</td>
+                        <td data-label="C. Users">-</td>
+                        <td data-label="Page Views">0</td>
+                        <td data-label="Server Hits">2</td>
+                        <td data-label="DB Queries">5</td>
+                    </tr><tr>
+                        <td data-label="Period">Monthly</td>
+                        <td data-label="C. Users">-</td>
+                        <td data-label="Page Views">0</td>
+                        <td data-label="Server Hits">2</td>
+                        <td data-label="DB Queries">5</td>                    
+                    </tr>
+                    </tbody>
+                </table>
 
             <br/>
             <div id="chart" height="250"></div>
