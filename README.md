@@ -1,9 +1,17 @@
-js-server-load-estimation
+JavaScript Server Load Estimation
 =========================
 
-NOTE: Project in a very early stage of development
+This JavaScript App estimates:
+   * Number of Concurrent Users.
+   * Page Views.
+   * Server Hits.
+   * Database Queries.
 
-Simple js-based app that helps you estimate the load of web application server by entering the
-expected number of visitors, peak time, and some other data about your system.
+Based on a normal distribution model and the following data:
+   * The estimated number of visitors (supports different populations with different timezones).
+   * The estimated visit duration, number of page views per visit, hits per page, etc.
 
-  *Assumes normally distributed visits (one distribution per time zone)
+Other features:
+   * Import / Export your configurations in JSON.
+   * Shows a one day Plot with the expected visits.
+   * Responsible design usable on smartphones, tablets and PCs.
