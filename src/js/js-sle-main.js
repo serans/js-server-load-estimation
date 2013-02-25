@@ -266,13 +266,15 @@ function calculateParams( config, n ) {
     var nservers = parseInt(config.nservers);
     var cdn = 1;
     if (config.cdn!=undefined) cdn = config.cdn/100;
-
-    return {
+console.log('n:'+n+' ppv:'+ppv+' hpp:'+hpp+' cdn:'+cdn+' nservers:'+nservers);
+    result = {
         "pviews":   Math.round(n*ppv*100)/100,
         "dbq":      Math.round(n*ppv*100*qpp)/100,
-        "hits":     Math.round(n*ppv*100*hpp*cdn/(nservers*100)),
+        "hits":     Math.round((n*ppv*100*hpp*cdn)/nservers)/100,
         "hits_cdn": ((1-cdn)*Math.round(n*ppv*hpp*100)/(nservers*100)),
     };
+    
+    return result;
 }
 
 function findMinMax(dist) {

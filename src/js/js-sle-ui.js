@@ -248,7 +248,6 @@ function generateReport() {
     function hour_to_hhmm(t) {
         var h = Math.floor(t);
         var m = Math.round((t-h)*60);
-        console.log(m);
         if(h<10) h="0"+h;
         if(m<10) m="0"+m;
         
