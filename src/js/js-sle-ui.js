@@ -201,6 +201,20 @@ function uploadJSON() {
 }
 
 function generateReport() {
+
+    function round(x) {
+        var suffix = '';
+        if(x>999999) {
+            x = x/1000000;
+            suffix = 'M';
+        }else if(x>9999) {
+            x = x/1000;
+            suffix = 'k';
+        } 
+        x = Math.round( x*100 )/100;
+        return x+suffix;
+    }
+
     estimation = getEstimation(readConfig());
     loadTab('report');
     drawPlot(estimation.plot_data, estimation.min_x, estimation.max_x);
@@ -215,13 +229,13 @@ function generateReport() {
     $('#min_cusers').text(estimation.params.min.cusers);
     $('#min_pviews').text(estimation.params.min.pviews);
     
-    $('#daily_hits').text(estimation.params.daily.hits);
-    $('#daily_dbq').text(estimation.params.daily.dbq);
-    $('#daily_pviews').text(estimation.params.daily.pviews);
+    $('#daily_hits').text(round(estimation.params.daily.hits));
+    $('#daily_dbq').text(round(estimation.params.daily.dbq));
+    $('#daily_pviews').text(round(estimation.params.daily.pviews));
         
-    $('#monthly_hits').text(estimation.params.monthly.hits);
-    $('#monthly_dbq').text(estimation.params.monthly.dbq);
-    $('#monthly_pviews').text(estimation.params.monthly.pviews);
+    $('#monthly_hits').text(round(estimation.params.monthly.hits));
+    $('#monthly_dbq').text(round(estimation.params.monthly.dbq));
+    $('#monthly_pviews').text(round(estimation.params.monthly.pviews));
         
     function hour_to_hhmm(t) {
         var h = Math.floor(t);
