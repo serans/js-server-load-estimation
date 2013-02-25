@@ -185,6 +185,16 @@ $(function() {
     ).dialog('close')
 });
 
+$(window).resize( function() { 
+    console.log(plot);
+    if(plot!=undefined) {
+        console.log("redraw");
+        plot = $.jqplot('chart', plot.data, plot.options);
+        plot.redraw();
+    }
+} )
+
+
 function dialogExport() {
     $("#dialog-export-textarea").val( JSON.stringify(readConfig()) );
     $("#dialog-export").dialog("open");
@@ -195,9 +205,7 @@ function dialogImport() {
 }
 
 function uploadJSON() {
-    importJSON( 
-      $.parseJSON($("#dialog-import-textarea").val())
-    );
+    importJSON( $.parseJSON($("#dialog-import-textarea").val()) );
 }
 
 function generateReport() {
@@ -217,7 +225,7 @@ function generateReport() {
 
     estimation = getEstimation(readConfig());
     loadTab('report');
-    drawPlot(estimation.plot_data, estimation.min_x, estimation.max_x);
+    plot = drawPlot(estimation.plot_data, estimation.min_x, estimation.max_x);
     
     $('#max_hits').text(estimation.params.max.hits);
     $('#max_dbq').text(estimation.params.max.dbq);
@@ -273,5 +281,7 @@ function drawPlot(data, minima, maxima) {
             }
         }]
     };
-    $.jqplot('chart',[data,minima], options ).redraw();
+    plot = $.jqplot('chart',[data,minima], options );
+    plot.redraw();
+    return plot;
 }
