@@ -20,3 +20,10 @@ Screenshots:
 ![Main Screen](https://dl.dropboxusercontent.com/u/17401485/github/main.png)
 
 ![Report](https://dl.dropboxusercontent.com/u/17401485/github/report.png)
+
+Licence
+=======
+
+All source code in this project is
+  * (C) MH Serans, unless stated otherwise
+  * Available under the MIT licence, unless stated otherwise (see LICENCE.txt)
