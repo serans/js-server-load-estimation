@@ -15,3 +15,8 @@ Other features:
    * Import / Export your configurations in JSON.
    * Shows a one day Plot with the expected visits.
    * Responsible design usable on smartphones, tablets and PCs.
+
+Screenshots:
+![Main Screen](https://dl.dropboxusercontent.com/u/17401485/github/main.png)
+
+![Report](https://dl.dropboxusercontent.com/u/17401485/github/report.png)
